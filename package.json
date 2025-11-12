@@ -1,0 +1,60 @@
+{
+  "name": "parse-curl",
+  "version": "1.0.0",
+  "description": "Parse cURL commands into structured JSON objects",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./cjs": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && bun build ./src/index.ts --outfile ./dist/index.js --target node --format esm --minify && bun build ./src/index.ts --outfile ./dist/index.cjs --target node --format cjs --minify && tsc --emitDeclarationOnly --outDir dist",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "curl",
+    "parse",
+    "http",
+    "request",
+    "parser",
+    "cli"
+  ],
+  "author": {
+    "name": "Danilo Vilhena",
+    "email": "danilo.vilhena@edu.unifor.br",
+    "url": "https://github.com/danilovilhena"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danilovilhena/parse-curl.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
