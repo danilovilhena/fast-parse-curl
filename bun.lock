@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "parse-curl",
+      "name": "fast-parse-curl",
       "dependencies": {
         "superjson": "^2.0.0",
       },

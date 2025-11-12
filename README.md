@@ -1,11 +1,11 @@
-# parse-curl
+# fast-parse-curl
 
 Parse cURL commands into structured JSON objects.
 
 ## Installation
 
 ```bash
-npm install parse-curl
+npm install fast-parse-curl
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install parse-curl
 ### ES Modules
 
 ```typescript
-import { parseCurl } from "parse-curl";
+import { parseCurl } from "fast-parse-curl";
 
 const result = parseCurl(
   'curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d \'{"name":"John"}\''
@@ -24,7 +24,7 @@ console.log(result);
 ### CommonJS
 
 ```javascript
-const { parseCurl } = require("parse-curl");
+const { parseCurl } = require("fast-parse-curl");
 
 const result = parseCurl(
   'curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d \'{"name":"John"}\''
@@ -35,7 +35,7 @@ console.log(result);
 ### CommonJS (explicit)
 
 ```javascript
-const { parseCurl } = require("parse-curl/cjs");
+const { parseCurl } = require("fast-parse-curl/cjs");
 
 const result = parseCurl("curl https://api.example.com");
 console.log(result);

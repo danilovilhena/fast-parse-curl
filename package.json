@@ -1,5 +1,5 @@
 {
-  "name": "parse-curl",
+  "name": "fast-parse-curl",
   "version": "1.0.0",
   "description": "Parse cURL commands into structured JSON objects",
   "main": "./dist/index.cjs",
@@ -47,7 +47,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/danilovilhena/parse-curl.git"
+    "url": "https://github.com/danilovilhena/fast-parse-curl.git"
   },
   "dependencies": {},
   "devDependencies": {
