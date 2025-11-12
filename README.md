@@ -21,24 +21,36 @@ const result = parseCurl(
 console.log(result);
 ```
 
-### CommonJS
+## Output Structure
 
-```javascript
-const { parseCurl } = require("fast-parse-curl");
+The `parseCurl` function returns an object with the following structure:
 
-const result = parseCurl(
-  'curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d \'{"name":"John"}\''
-);
-console.log(result);
-```
-
-### CommonJS (explicit)
-
-```javascript
-const { parseCurl } = require("fast-parse-curl/cjs");
-
-const result = parseCurl("curl https://api.example.com");
-console.log(result);
+```typescript
+interface ParseCurlResult {
+  method: string /* HTTP method (GET, POST, PUT, DELETE, etc.) */;
+  url: string /* The request URL */;
+  headers: Record<string, string> /* HTTP headers as key-value pairs */;
+  body:
+    | object
+    | string
+    | null /* Request body (parsed JSON object, string, or null) */;
+  form: Record<string, string> /* Form data fields (multipart/form-data) */;
+  auth: {
+    type: "basic" | "digest" | "bearer";
+    username: string;
+    password: string;
+    token: string;
+  };
+  cookies: Record<string, string> /* Cookies as key-value pairs */;
+  options: {
+    followRedirects: boolean /* --location / -L flag */;
+    insecure: boolean /* --insecure / -k flag */;
+    compressed: boolean /* --compressed flag */;
+    timeout: number | null /* --max-time value */;
+    connectTimeout: number | null /* --connect-timeout value */;
+    verbose: boolean /* --verbose / -v flag */;
+  };
+}
 ```
 
 ## Examples
@@ -47,16 +59,17 @@ console.log(result);
 
 ```typescript
 const result = parseCurl("curl https://api.example.com");
-// {
-//   method: 'GET',
-//   url: 'https://api.example.com',
-//   headers: {},
-//   body: null,
-//   form: {},
-//   auth: { type: 'basic', username: '', password: '', token: '' },
-//   cookies: {},
-//   options: { followRedirects: false, insecure: false, ... }
-// }
+/* {
+ *   method: 'GET',
+ *   url: 'https://api.example.com',
+ *   headers: {},
+ *   body: null,
+ *   form: {},
+ *   auth: { type: 'basic', username: '', password: '', token: '' },
+ *   cookies: {},
+ *   options: { followRedirects: false, insecure: false, ... }
+ * }
+ */
 ```
 
 ### POST with JSON Body
@@ -65,23 +78,25 @@ const result = parseCurl("curl https://api.example.com");
 const result = parseCurl(
   'curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d \'{"name":"John","age":30}\''
 );
-// {
-//   method: 'POST',
-//   url: 'https://api.example.com/users',
-//   headers: { 'Content-Type': 'application/json' },
-//   body: { name: 'John', age: 30 },
-//   ...
-// }
+/* {
+ *   method: 'POST',
+ *   url: 'https://api.example.com/users',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: { name: 'John', age: 30 },
+ *   ...
+ * }
+ */
 ```
 
 ### With Authentication
 
 ```typescript
 const result = parseCurl("curl -u username:password https://api.example.com");
-// {
-//   auth: { type: 'basic', username: 'username', password: 'password', token: '' },
-//   ...
-// }
+/* {
+ *   auth: { type: 'basic', username: 'username', password: 'password', token: '' },
+ *   ...
+ * }
+ */
 ```
 
 ### With Bearer Token
@@ -90,10 +105,11 @@ const result = parseCurl("curl -u username:password https://api.example.com");
 const result = parseCurl(
   'curl -H "Authorization: Bearer abc123" https://api.example.com'
 );
-// {
-//   auth: { type: 'bearer', username: '', password: '', token: 'abc123' },
-//   ...
-// }
+/* {
+ *   auth: { type: 'bearer', username: '', password: '', token: 'abc123' },
+ *   ...
+ * }
+ */
 ```
 
 ### With Headers and Cookies
@@ -102,11 +118,56 @@ const result = parseCurl(
 const result = parseCurl(
   'curl -H "Content-Type: application/json" -b "sessionId=abc123" https://api.example.com'
 );
-// {
-//   headers: { 'Content-Type': 'application/json' },
-//   cookies: { sessionId: 'abc123' },
-//   ...
-// }
+/* {
+ *   headers: { 'Content-Type': 'application/json' },
+ *   cookies: { sessionId: 'abc123' },
+ *   ...
+ * }
+ */
+```
+
+### File Uploads (Multipart Form Data)
+
+```typescript
+const result = parseCurl(
+  'curl -F "file=@/path/to/image.jpg" -F "name=My Image" https://api.example.com/upload'
+);
+/* {
+ *   method: 'POST',
+ *   form: { file: '@/path/to/image.jpg', name: 'My Image' },
+ *   ...
+ * }
+ */
+```
+
+### Binary Data
+
+```typescript
+const result = parseCurl(
+  'curl --data-binary "@/path/to/file.bin" https://api.example.com/upload'
+);
+/* {
+ *   method: 'POST',
+ *   body: '@/path/to/file.bin',
+ *   ...
+ * }
+ */
+```
+
+### Multiple File Uploads
+
+```typescript
+const result = parseCurl(
+  'curl -F "avatar=@/path/to/avatar.jpg" -F "document=@/path/to/doc.pdf" https://api.example.com/upload'
+);
+/* {
+ *   form: {
+ *     avatar: '@/path/to/avatar.jpg',
+ *     document: '@/path/to/doc.pdf'
+ *   },
+ *   ...
+ * }
+ */
 ```
 
 ### Multi-line Command
@@ -123,10 +184,3 @@ const result = parseCurl(`
 ## License
 
 MIT
-
-## Author
-
-**Danilo Vilhena**
-
-- Email: danilo.vilhena@edu.unifor.br
-- GitHub: [@danilovilhena](https://github.com/danilovilhena)

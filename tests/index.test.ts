@@ -171,6 +171,13 @@ describe("parseCurl", () => {
       expect(result.body).toBe("binary");
     });
 
+    it("should handle --data-binary with file path", () => {
+      const result = parseCurl(
+        'curl --data-binary "@/path/to/file.bin" https://api.example.com/upload'
+      );
+      expect(result.body).toBe("@/path/to/file.bin");
+    });
+
     it("should handle --data-urlencode flag", () => {
       const result = parseCurl(
         'curl --data-urlencode "key=value" https://api.example.com'
@@ -235,6 +242,27 @@ describe("parseCurl", () => {
         'curl -F "key=https://example.com" https://api.example.com'
       );
       expect(result.form).toEqual({});
+    });
+
+    it("should handle multiple file uploads", () => {
+      const result = parseCurl(
+        'curl -F "avatar=@/path/to/avatar.jpg" -F "document=@/path/to/doc.pdf" https://api.example.com'
+      );
+      expect(result.form).toEqual({
+        avatar: "@/path/to/avatar.jpg",
+        document: "@/path/to/doc.pdf",
+      });
+    });
+
+    it("should handle mixed form fields and file uploads", () => {
+      const result = parseCurl(
+        'curl -F "name=John" -F "file=@/path/to/image.jpg" -F "email=john@example.com" https://api.example.com'
+      );
+      expect(result.form).toEqual({
+        name: "John",
+        file: "@/path/to/image.jpg",
+        email: "john@example.com",
+      });
     });
   });
 
