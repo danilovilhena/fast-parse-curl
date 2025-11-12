@@ -179,6 +179,14 @@ const result = parseCurl(`
     -d '{"key":"value"}' \\
     https://api.example.com
 `);
+/* {
+ *   method: 'POST',
+ *   url: 'https://api.example.com',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: { key: 'value' },
+ *   ...
+ * }
+ */
 ```
 
 ## License
